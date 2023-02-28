@@ -1,0 +1,29 @@
+# Arquivos de byte compilados Python
+*.pyc
+
+# Arquivos de backup do vim
+*~
+
+# Arquivos de configuração do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de banco de dados SQLite
+*.db
+
+# Arquivos de cache do Django
+__pycache__/
+*.pyc
+*.pyo
+
+# Arquivos de log do Django
+*.log
+
+# Diretório de mídia do Django
+media/
+
+# Diretório de arquivos estáticos do Django
+staticfiles/
+
+# Diretório do ambiente virtual
+venv/
