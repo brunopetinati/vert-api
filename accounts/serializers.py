@@ -19,42 +19,36 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-# class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-#     def validate(self, attrs):
-#         data = super().validate(attrs)
-#         refresh = self.get_token(self.user)
-#         data['refresh'] = str(refresh)
-#         data['access'] = str(refresh.access_token)
-#         data['id'] = self.user.id
-#         data['full_name'] = self.user.full_name
-#         data['phone'] = self.user.phone
-#         data['city'] = self.user.city
-#         data['state'] = self.user.state
-#         return data
+
+class CustomUserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        # Adicione quaisquer outros campos que você deseja incluir no payload do token
-        token['email'] = user.email
-        return token
-
     def validate(self, attrs):
-        credentials = {
-            'email': attrs.get('email'),
-            'password': attrs.get('password')
-        }
-        # Certifique-se de que o email seja exclusivo para cada usuário, caso contrário, pode haver vários usuários com o mesmo email
-        user = authenticate(request=self.context['request'], **credentials)
-        if not user:
-            raise AuthenticationFailed('Credenciais inválidas.')
-        if not user.is_active:
-            raise AuthenticationFailed('Conta desativada ou excluída.')
-        refresh = self.get_token(user)
-        data = {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
-        return data
+        email = attrs.get('email')
+        password = attrs.get('password')
+        if email and password:
+            user = authenticate(request=self.context['request'], email=email, password=password)
+            if not user:
+                raise AuthenticationFailed('Credenciais inválidas.')
+            if not user.is_active:
+                raise AuthenticationFailed('Conta desativada ou excluída.')
+            data = {
+                'id': user.id,
+                'full_name': user.full_name,
+                'phone': user.phone,
+                'city': user.city,
+                'state': user.state,
+                'email': user.email,
+                'refresh': str(self.get_token(user)),
+                'access': str(self.get_token(user).access_token),
+            }
+            return data
+        else:
+            raise AuthenticationFailed('Informe o email e a senha.')
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
