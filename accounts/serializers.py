@@ -9,7 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email', 'password']
+        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email', 'password', 'user_type']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -27,6 +27,7 @@ class CustomUserLoginSerializer(serializers.Serializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
+        print('#############data', data)
         email = attrs.get('email')
         password = attrs.get('password')
         if email and password:
@@ -35,26 +36,21 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 raise AuthenticationFailed('Credenciais inválidas.')
             if not user.is_active:
                 raise AuthenticationFailed('Conta desativada ou excluída.')
+            tokens = super().validate(attrs)
+            custom_user_serializer = CustomUserSerializer(user)
             data = {
-                'id': user.id,
-                'full_name': user.full_name,
-                'phone': user.phone,
-                'city': user.city,
-                'state': user.state,
-                'email': user.email,
-                'refresh': str(self.get_token(user)),
-                'access': str(self.get_token(user).access_token),
+                'tokens': tokens,
+                'user': custom_user_serializer.data
             }
             return data
         else:
             raise AuthenticationFailed('Informe o email e a senha.')
+    
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email']
+        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email', 'user_type']
