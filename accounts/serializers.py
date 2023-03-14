@@ -9,7 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email', 'password']
+        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email', 'password', 'user_type']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -53,4 +53,4 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email']
+        fields = ['id', 'full_name', 'phone', 'city', 'state', 'email', 'user_type']

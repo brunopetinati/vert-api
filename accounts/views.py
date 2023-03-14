@@ -30,7 +30,6 @@ class CustomUserCreate(generics.CreateAPIView):
     serializer_class = CustomUserSerializer
 
 
-
 class CustomUserList(generics.ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
@@ -57,7 +56,11 @@ class CustomUserLoginView(APIView):
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
                 'full_name': user.full_name,
-                'phone': user.phone
+                'phone': user.phone,
+                'city': user.city,
+                'state': user.state,
+                'email': user.email,
+                'user_type': user.user_type
             }
 
             return Response(data, status=status.HTTP_200_OK)
