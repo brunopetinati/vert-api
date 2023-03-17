@@ -1,4 +1,5 @@
 from django.db import models
+
 from accounts.models import CustomUser
 
 
@@ -17,9 +18,9 @@ class Project(models.Model):
     cnpj = models.IntegerField(null=True)
     conservation_unit = models.CharField(max_length=50)
     owner_actions_to_preserve_forest = models.TextField()
-    pdf_matricula_certificate = models.FileField(upload_to='matricula_certificate/', blank=True, null=True)
-    pdf_car = models.FileField(upload_to='car/', blank=True, null=True)
-    property_polygon = models.FileField(upload_to='property_polygon/', blank=True, null=True)
-    pdf_federal_debt_certificate = models.FileField(upload_to='federal_debt/', blank=True, null=True)
-    pdf_ccir = models.FileField(upload_to='ccir/', blank=True, null=True)
+    pdf_matricula_certificate = models.FileField(upload_to="matricula_certificate/", blank=True, null=True)
+    pdf_car = models.FileField(upload_to="car/", blank=True, null=True)
+    property_polygon = models.FileField(upload_to="property_polygon/", blank=True, null=True)
+    pdf_federal_debt_certificate = models.FileField(upload_to="federal_debt/", blank=True, null=True)
+    pdf_ccir = models.FileField(upload_to="ccir/", blank=True, null=True)
 
