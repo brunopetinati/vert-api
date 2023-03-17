@@ -22,10 +22,6 @@ class CustomUserCreate(generics.CreateAPIView):
     serializer_class = CustomUserSerializer
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-
 class CustomUserList(generics.ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer

@@ -8,6 +8,8 @@ class CustomUser(AbstractUser):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
+    user_type = models.CharField(max_length=20)
+
     username = None
 
     USERNAME_FIELD = "email"

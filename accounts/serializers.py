@@ -53,8 +53,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed("Informe o email e a senha.")
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
