@@ -50,6 +50,7 @@ class CustomUserLoginView(APIView):
             data = {
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
+                "id": user.id,
                 "full_name": user.full_name,
                 "phone": user.phone,
                 "city": user.city,
