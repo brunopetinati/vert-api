@@ -56,7 +56,24 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+# class CustomUserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CustomUser
+#         fields = ["id", "full_name", "phone", "city", "state", "email"]
+
+
+class CustomUserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "phone", "city", "state", "email"]
+        fields = ["id", "full_name", "phone", "city", "state", "email", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def update(self, instance, validated_data):
+        # verifique se o valor do campo de email foi alterado
+        if 'email' in validated_data and validated_data['email'] != instance.email:
+            # verifique se o novo valor do campo de email já existe em outro registro
+            if CustomUser.objects.filter(email=validated_data['email']).exists():
+                raise serializers.ValidationError("Este email já está em uso.")
+
+        # atualize o objeto `CustomUser` com os dados validados
+        return super().update(instance, validated_data)

@@ -12,7 +12,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from accounts.serializers import CustomUserLoginSerializer
 
 from .models import CustomUser
-from .serializers import CustomTokenObtainPairSerializer, CustomUserSerializer
+from .serializers import CustomTokenObtainPairSerializer, CustomUserSerializer, CustomUserUpdateSerializer
 
 
 @authentication_classes([])
@@ -69,4 +69,15 @@ class CustomUserLoginView(APIView):
 class CustomUserGetByIdAPIView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    lookup_field = "id"
+
+class CustomUserDeleteAPIView(generics.DestroyAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    lookup_field = "id"
+
+
+class CustomUserUpdateAPIView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserUpdateSerializer
     lookup_field = "id"
