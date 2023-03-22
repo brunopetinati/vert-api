@@ -10,7 +10,7 @@ from .models import CustomUser
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "phone", "city", "state", "email", "password"]
+        fields = ["id", "full_name", "phone", "city", "state", "email", "password", "user_type"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -45,6 +45,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "city": user.city,
                 "state": user.state,
                 "email": user.email,
+                "user_type": user.user_type,
                 "refresh": str(self.get_token(user)),
                 "access": str(self.get_token(user).access_token),
             }
