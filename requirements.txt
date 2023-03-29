@@ -34,6 +34,7 @@ pexpect==4.8.0
 pickleshare==0.7.5
 platformdirs==3.0.0
 prompt-toolkit==3.0.37
+psycopg2-binary==2.9.5
 ptyprocess==0.7.0
 pure-eval==0.2.2
 pycodestyle==2.10.0
@@ -52,4 +53,3 @@ traitlets==5.9.0
 typing_extensions==4.5.0
 wcwidth==0.2.6
 wrapt==1.14.1
-

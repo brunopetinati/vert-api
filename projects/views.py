@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 
 from .models import Project
@@ -23,3 +25,13 @@ class ProjectDeleteAPIView(generics.DestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     lookup_field = "id"
+
+def download_file(request, project_id, field_name):
+    project = get_object_or_404(Project, id=project_id)
+    file_field = getattr(project, field_name)
+    if not file_field:
+        return HttpResponse("Arquivo não encontrado", status=404)
+    file_content = file_field.read()
+    response = HttpResponse(file_content, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(file_field.name)
+    return response    
