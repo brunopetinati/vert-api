@@ -97,9 +97,9 @@ WSGI_APPLICATION = "vert_api.wsgi.application"
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'vert',
-        'USER': 'ale',
-        'PASSWORD': '12345',
+        'NAME': 'vert_ecotech',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
     }
