@@ -179,4 +179,4 @@ CORS_ALLOW_HEADERS = (
     'X-CSRFToken'
 )
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://localhost:19006"]
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://localhost:19006", "http://192.168.15.8:19006"]
