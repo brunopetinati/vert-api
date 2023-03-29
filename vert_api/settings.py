@@ -160,4 +160,23 @@ REST_FRAMEWORK = {
     # outras configurações do DRF
 }
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Headers',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'X-CSRFToken'
+)
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://localhost:19006"]
