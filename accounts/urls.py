@@ -1,13 +1,8 @@
 from django.urls import path
 
-from .views import (
-    CustomUserCreate,
-    CustomUserGetByIdAPIView,
-    CustomUserList,
-    CustomUserLoginView,
-    CustomUserUpdateAPIView,
-    CustomUserDeleteAPIView,
-)
+from .views import (CustomUserCreate, CustomUserDeleteAPIView,
+                    CustomUserGetByIdAPIView, CustomUserList,
+                    CustomUserLoginView, CustomUserUpdateAPIView)
 
 urlpatterns = [
     path("signup/", CustomUserCreate.as_view(), name="user_create"),

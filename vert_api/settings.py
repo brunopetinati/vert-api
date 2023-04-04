@@ -10,9 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
 from datetime import timedelta
-
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,6 +70,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
 ]
 
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = "vert_api.urls"
 
 TEMPLATES = [
@@ -96,9 +98,13 @@ WSGI_APPLICATION = "vert_api.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'vert_ecotech',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -157,4 +163,23 @@ REST_FRAMEWORK = {
     # outras configurações do DRF
 }
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Headers',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'X-CSRFToken'
+)
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://localhost:19006", "http://192.168.15.8:19006",  "http://192.168.15.8"]
