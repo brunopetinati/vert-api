@@ -17,7 +17,7 @@ from accounts.serializers import CustomUserLoginSerializer
 from .models import CustomUser
 from .serializers import (CustomTokenObtainPairSerializer,
                           CustomUserSerializer, CustomUserUpdateSerializer)
-
+from django.contrib.auth.hashers import check_password
 
 @authentication_classes([])
 @permission_classes([])
@@ -41,9 +41,23 @@ class CustomUserLoginView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
+        """ if not password:
+            return Response(
+                {"error": "Please provide a password"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            ) """
+
+
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+
+        # Verify the password
+        if not check_password(password, user.password):
             return Response(
                 {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
             )
@@ -64,6 +78,7 @@ class CustomUserLoginView(APIView):
             }
 
             return Response(data, status=status.HTTP_200_OK)
+        
         except argon2.exceptions.VerifyMismatchError:
             return Response(
                 {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
