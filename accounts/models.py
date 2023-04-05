@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     complement = models.CharField(max_length=200, blank=True, null=True)
     number = models.CharField(max_length=200, blank=True, null=True)
     cep = models.CharField(max_length=200, blank=True, null=True)
-    neighborhood = models.CharField(max_length=200, blank=True, null=True)
+    district = models.CharField(max_length=200, blank=True, null=True)
     street = models.CharField(max_length=200, blank=True, null=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)

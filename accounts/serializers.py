@@ -10,7 +10,7 @@ from .models import CustomUser
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "phone", "city", "state", "email", "password", "user_type"]
+        fields = ["id", "full_name", "rg", "cpf", "phone", "street", "number", "district", "complement", "city", "state", "email", "user_type"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -66,7 +66,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CustomUserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "phone", "city", "state", "email", "password"]
+        fields = ["id", "full_name", "phone", "cpf", "cep", "street", "number", "complement", "district","city", "state", "email"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def update(self, instance, validated_data):
