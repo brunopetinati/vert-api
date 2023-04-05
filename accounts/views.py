@@ -71,10 +71,17 @@ class CustomUserLoginView(APIView):
                 "id": user.id,
                 "full_name": user.full_name,
                 "phone": user.phone,
-                "city": user.city,
-                "state": user.state,
                 "email": user.email,
                 "user_type": user.user_type,
+                "rg": user.rg,
+                "cpf": user.cpf,
+                "cep": user.cep,
+                "street": user.street,
+                "number": user.number,
+                "complement": user.complement,
+                "district": user.district,
+                "state": user.state,
+                "city": user.city
             }
 
             return Response(data, status=status.HTTP_200_OK)
@@ -98,5 +105,5 @@ class CustomUserDeleteAPIView(generics.DestroyAPIView):
 
 class CustomUserUpdateAPIView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserUpdateSerializer
+    serializer_class = CustomUserSerializer
     lookup_field = "id"
