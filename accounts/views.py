@@ -16,7 +16,7 @@ from accounts.serializers import CustomUserLoginSerializer
 
 from .models import CustomUser
 from .serializers import (CustomTokenObtainPairSerializer,
-                          CustomUserSerializer, CustomUserUpdateSerializer)
+                          CustomUserSerializer, CustomUserUpdateSerializer, CustomUpdateUserSerializer)
 from django.contrib.auth.hashers import check_password
 
 @authentication_classes([])
@@ -105,5 +105,5 @@ class CustomUserDeleteAPIView(generics.DestroyAPIView):
 
 class CustomUserUpdateAPIView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = CustomUpdateUserSerializer
     lookup_field = "id"
