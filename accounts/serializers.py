@@ -27,10 +27,8 @@ class CustomUpdateUserSerializer(serializers.ModelSerializer):
         fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "street", "number", "district", "complement", "city", "state", "email", "user_type"]
         extra_kwargs = {"password": {"write_only": True}}
 
-    def create(self, validated_data):
-        password = validated_data.pop("password")
+    def update(self, validated_data):
         user = CustomUser(**validated_data)
-        user.set_password(password)
         user.save()
         return user
 
