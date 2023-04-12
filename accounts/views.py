@@ -75,6 +75,7 @@ class CustomUserLoginView(APIView):
                 "user_type": user.user_type,
                 "rg": user.rg,
                 "cpf": user.cpf,
+                "cnpj": user.cnpj,
                 "cep": user.cep,
                 "street": user.street,
                 "number": user.number,

@@ -17,8 +17,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
 
 # Quick-start development settings - unsuitable for production
@@ -171,6 +171,7 @@ CORS_ALLOW_METHODS = (
     'DELETE',
     'OPTIONS'
 )
+
 CORS_ALLOW_HEADERS = (
     'x-requested-with',
     'Access-Control-Allow-Origin',

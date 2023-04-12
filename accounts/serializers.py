@@ -10,7 +10,7 @@ from .models import CustomUser
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "street", "number", "district", "complement", "city", "state", "email", "user_type", "password"]
+        fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "cnpj", "street", "number", "district", "complement", "city", "state", "email", "user_type", "password"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -24,13 +24,27 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomUpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "street", "number", "district", "complement", "city", "state", "email", "user_type"]
+        fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "cnpj", "street", "number", "district", "complement", "city", "state", "email", "user_type"]
         extra_kwargs = {"password": {"write_only": True}}
 
-    def update(self, validated_data):
-        user = CustomUser(**validated_data)
-        user.save()
-        return user
+    def update(self, instance, validated_data):
+        instance.full_name = validated_data.get("full_name", instance.full_name)
+        instance.rg = validated_data.get("rg", instance.rg)
+        instance.cpf = validated_data.get("cpf", instance.cpf)
+        instance.phone = validated_data.get("phone", instance.phone)
+        instance.cep = validated_data.get("cep", instance.cep)
+        instance.cnpj = validated_data.get("cnpj", instance.cnpj)
+        instance.street = validated_data.get("street", instance.street)
+        instance.number = validated_data.get("number", instance.number)
+        instance.district = validated_data.get("district", instance.district)
+        instance.complement = validated_data.get("complement", instance.complement)
+        instance.city = validated_data.get("city", instance.city)
+        instance.state = validated_data.get("state", instance.state)
+        instance.user_type = validated_data.get("user_type", instance.user_type)
+        instance.save()
+
+        return instance
+
 
 
 class CustomUserLoginSerializer(serializers.Serializer):
