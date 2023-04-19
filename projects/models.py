@@ -4,6 +4,7 @@ from accounts.models import CustomUser
 
 
 class Project(models.Model):
+    title = models.CharField(max_length=100, default="default")
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     total_area = models.FloatField(blank=True)
     legal_reserve_area = models.FloatField(blank=True)
@@ -24,4 +25,3 @@ class Project(models.Model):
     property_polygon = models.FileField(upload_to="property_polygon/", blank=True, null=True)
     pdf_federal_debt_certificate = models.FileField(upload_to="federal_debt/", blank=True, null=True)
     pdf_ccir = models.FileField(upload_to="ccir/", blank=True, null=True)
-
