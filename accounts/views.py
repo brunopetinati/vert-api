@@ -1,23 +1,23 @@
 import argon2
+from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, hashers
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
 from rest_framework import generics, status
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
-from rest_framework.decorators import (authentication_classes,
-                                       permission_classes)
-from rest_framework.permissions import (AllowAny, BasePermission,
-                                        IsAuthenticated)
+from rest_framework.authentication import (BasicAuthentication, SessionAuthentication)
+from rest_framework.decorators import (authentication_classes, permission_classes)
+from rest_framework.permissions import (AllowAny, BasePermission, IsAuthenticated)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-from accounts.serializers import CustomUserLoginSerializer
-
 from .models import CustomUser
-from .serializers import (CustomTokenObtainPairSerializer,
-                          CustomUserSerializer, CustomUserUpdateSerializer, CustomUpdateUserSerializer)
-from django.contrib.auth.hashers import check_password
+from accounts.serializers import CustomUserLoginSerializer
+from .serializers import (CustomTokenObtainPairSerializer, CustomUserSerializer, CustomUserUpdateSerializer, CustomUpdateUserSerializer)
+
 
 @authentication_classes([])
 @permission_classes([])
@@ -108,3 +108,52 @@ class CustomUserUpdateAPIView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUpdateUserSerializer
     lookup_field = "id"
+
+def reset_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'User does not exist'})
+        if user.check_password(password):
+            # Generate a new password reset token
+            token_generator = PasswordResetTokenGenerator()
+            token = token_generator.make_token(user)
+            # Set the user's password reset token and send the email
+            user.password_reset_token = token
+            user.save()
+            subject = 'Reset Your Password'
+            message = f'Please click on the following link to reset your password: http://example.com/reset-password/{token}'
+            from_email = 'noreply@example.com'
+            recipient_list = [email]
+            send_mail(subject, message, from_email, recipient_list)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'error': 'Invalid password'})
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
+
+def recover_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user_model = get_user_model()
+        try:
+            user = user_model.objects.get(email=email)
+        except user_model.DoesNotExist:
+            return JsonResponse({'error': 'No user with that email.'}, status=404)
+        
+        new_password = get_random_string(length=10) # generate new password
+        user.set_password(new_password) # set the new password
+        user.save() # save the user object
+        send_mail(
+            'Your new password', # subject
+            f'Your new password is: {new_password}', # message
+            'from@example.com', # from email
+            [email], # recipient email
+            fail_silently=False, # raise an error if the email fails to send
+        )
+        return JsonResponse({'success': 'Password reset email sent.'}, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)

@@ -104,3 +104,6 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
 
         # atualize o objeto `CustomUser` com os dados validados
         return super().update(instance, validated_data)
+
+class PasswordRecoverySerializer(serializers.Serializer):
+    email = serializers.EmailField()

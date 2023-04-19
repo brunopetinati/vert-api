@@ -1,4 +1,5 @@
 from django.urls import path
+from .views import reset_password, recover_password
 
 from .views import (CustomUserCreate, CustomUserDeleteAPIView,
                     CustomUserGetByIdAPIView, CustomUserList,
@@ -11,4 +12,6 @@ urlpatterns = [
     path("users/<int:id>/", CustomUserGetByIdAPIView.as_view(), name="user-detail"),
     path("users/<int:id>/update/", CustomUserUpdateAPIView.as_view(), name="user-update"),
     path("users/<int:id>/delete/", CustomUserDeleteAPIView.as_view(), name="user-delete"),
+    path("reset-password/", reset_password, name="reset_password"),
+    path("recover-password/", recover_password, name="recover-password"),    
 ]
