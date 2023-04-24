@@ -1,6 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+class UserTypeEnum(models.TextChoices):
+    REGULAR = 'REG', ('Regular')
+    ADMIN = 'ADM', ('Admin')
+    COMERCIAL = 'COM', ('Comercial')
+    ENGENHARIA = 'ENG', ('Engenharia')
 
 class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=200)
@@ -16,7 +21,11 @@ class CustomUser(AbstractUser):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    user_type = models.CharField(max_length=20)
+    user_type = models.CharField(
+        max_length=20,
+        choices=UserTypeEnum.choices,
+        default=UserTypeEnum.REGULAR,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
