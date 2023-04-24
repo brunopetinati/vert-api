@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class UserTypeEnum(models.TextChoices):
-    REGULAR = 'REG', ('Regular')
+    REGULAR = 'Regular', ('Regular')
     ADMIN = 'ADM', ('Admin')
     COMERCIAL = 'COM', ('Comercial')
     ENGENHARIA = 'ENG', ('Engenharia')
