@@ -17,7 +17,6 @@ class Project(models.Model):
     georeferencing_status = models.CharField(max_length=200, blank=True)
     reserve_legal_status = models.CharField(max_length=200, blank=True)
     physical_or_legal_entity = models.CharField(max_length=200, blank=True)
-    cnpj = models.CharField(max_length=200, null=True, blank=True)
     conservation_unit = models.CharField(max_length=200, blank=True)
     owner_actions_to_preserve_forest = models.TextField(blank=True)
     legal_reserve_deficit = models.BooleanField(null=True, blank=True)
