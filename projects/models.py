@@ -10,6 +10,7 @@ class Project(models.Model):
     total_area = models.FloatField(blank=True)
     legal_reserve_area = models.FloatField(blank=True)
     address = models.CharField(max_length=200, blank=True)
+    cep = models.CharField(max_length=20, blank=True, null=True)
     status_car = models.CharField(max_length=200, blank=True)
     sicar_code = models.CharField(max_length=200, blank=True)
     matricula_status = models.CharField(max_length=200, blank=True)
