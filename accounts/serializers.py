@@ -10,7 +10,24 @@ from .models import CustomUser
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "cnpj", "street", "number", "district", "complement", "city", "state", "email", "user_type", "password"]
+        fields = [
+            "id",
+            "full_name",
+            "rg",
+            "cpf",
+            "phone",
+            "cep",
+            "cnpj",
+            "street",
+            "number",
+            "district",
+            "complement",
+            "city",
+            "state",
+            "email",
+            "user_type",
+            "password",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -24,7 +41,23 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomUpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "rg", "cpf", "phone", "cep", "cnpj", "street", "number", "district", "complement", "city", "state", "email", "user_type"]
+        fields = [
+            "id",
+            "full_name",
+            "rg",
+            "cpf",
+            "phone",
+            "cep",
+            "cnpj",
+            "street",
+            "number",
+            "district",
+            "complement",
+            "city",
+            "state",
+            "email",
+            "user_type",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def update(self, instance, validated_data):
@@ -44,7 +77,6 @@ class CustomUpdateUserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
 
 
 class CustomUserLoginSerializer(serializers.Serializer):
@@ -80,30 +112,44 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed("Informe o email e a senha.")
 
 
-
-
-
-# class CustomUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CustomUser
-#         fields = ["id", "full_name", "phone", "city", "state", "email"]
-
-
 class CustomUserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "phone", "cpf", "cep", "street", "number", "complement", "district","city", "state", "email"]
+        fields = [
+            "id",
+            "full_name",
+            "phone",
+            "cpf",
+            "cep",
+            "street",
+            "number",
+            "complement",
+            "district",
+            "city",
+            "state",
+            "email",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def update(self, instance, validated_data):
         # verifique se o valor do campo de email foi alterado
-        if 'email' in validated_data and validated_data['email'] != instance.email:
+        if "email" in validated_data and validated_data["email"] != instance.email:
             # verifique se o novo valor do campo de email já existe em outro registro
-            if CustomUser.objects.filter(email=validated_data['email']).exists():
+            if CustomUser.objects.filter(email=validated_data["email"]).exists():
                 raise serializers.ValidationError("Este email já está em uso.")
 
         # atualize o objeto `CustomUser` com os dados validados
         return super().update(instance, validated_data)
 
-class PasswordRecoverySerializer(serializers.Serializer):
+
+class CustomUserPasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(
+        style={"input_type": "password"}, trim_whitespace=False
+    )
+    new_password = serializers.CharField(
+        style={"input_type": "password"}, trim_whitespace=False
+    )
+
+
+class CustomUserEmailPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()

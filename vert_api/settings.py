@@ -17,8 +17,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=8),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
 }
 
 # Quick-start development settings - unsuitable for production
@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-w10)py#uo%r2vgwg)ihrgx*3+g6v03_u)p)uj0k!c1&x930i_&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.145.151.125', 'localhost', '*']
+ALLOWED_HOSTS = ["3.145.151.125", "localhost", "*"]
 
 
 # Application definition
@@ -97,13 +97,13 @@ WSGI_APPLICATION = "vert_api.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'vert_ecotech',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "vert_ecotech",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 
@@ -162,32 +162,30 @@ REST_FRAMEWORK = {
     # outras configurações do DRF
 }
 
-CORS_ALLOW_METHODS = (
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'OPTIONS'
-)
+CORS_ALLOW_METHODS = ("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 
 CORS_ALLOW_HEADERS = (
-    'x-requested-with',
-    'Access-Control-Allow-Origin',
-    'Access-Control-Allow-Headers',
-    'content-type',
-    'accept',
-    'origin',
-    'authorization',
-    'X-CSRFToken'
+    "x-requested-with",
+    "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Headers",
+    "content-type",
+    "accept",
+    "origin",
+    "authorization",
+    "X-CSRFToken",
 )
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://localhost:19006", "http://192.168.15.8:19006",  "http://192.168.15.8"]
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://localhost:19006",
+    "http://192.168.15.8:19006",
+    "http://192.168.15.8",
+]
 
 CSRF_COOKIE_SECURE = False
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'your_smtp_host'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "your_smtp_host"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'your_smtp_username'
-EMAIL_HOST_PASSWORD = 'your_smtp_password'
+EMAIL_HOST_USER = "your_smtp_username"
+EMAIL_HOST_PASSWORD = "your_smtp_password"

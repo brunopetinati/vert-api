@@ -1,22 +1,32 @@
 import argon2
-from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.contrib.auth import authenticate, hashers
+from django.contrib.auth import authenticate, get_user_model, hashers
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils.crypto import get_random_string
+from django.utils.decorators import method_decorator
 from rest_framework import generics, status
-from rest_framework.authentication import (BasicAuthentication, SessionAuthentication)
-from rest_framework.decorators import (authentication_classes, permission_classes)
-from rest_framework.permissions import (AllowAny, BasePermission, IsAuthenticated)
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .models import CustomUser
+
 from accounts.serializers import CustomUserLoginSerializer
-from .serializers import (CustomTokenObtainPairSerializer, CustomUserSerializer, CustomUserUpdateSerializer, CustomUpdateUserSerializer)
+
+from .models import CustomUser
+from .serializers import (
+    CustomTokenObtainPairSerializer,
+    CustomUpdateUserSerializer,
+    CustomUserEmailPasswordSerializer,
+    CustomUserPasswordSerializer,
+    CustomUserSerializer,
+    CustomUserUpdateSerializer,
+)
 
 
 @authentication_classes([])
@@ -47,14 +57,12 @@ class CustomUserLoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             ) """
 
-
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
             return Response(
                 {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
             )
-        
 
         # Verify the password
         if not check_password(password, user.password):
@@ -82,11 +90,11 @@ class CustomUserLoginView(APIView):
                 "complement": user.complement,
                 "district": user.district,
                 "state": user.state,
-                "city": user.city
+                "city": user.city,
             }
 
             return Response(data, status=status.HTTP_200_OK)
-        
+
         except argon2.exceptions.VerifyMismatchError:
             return Response(
                 {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
@@ -97,6 +105,7 @@ class CustomUserGetByIdAPIView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     lookup_field = "id"
+
 
 class CustomUserDeleteAPIView(generics.DestroyAPIView):
     queryset = CustomUser.objects.all()
@@ -109,51 +118,65 @@ class CustomUserUpdateAPIView(generics.UpdateAPIView):
     serializer_class = CustomUpdateUserSerializer
     lookup_field = "id"
 
-def reset_password(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        try:
-            user = CustomUser.objects.get(email=email)
-        except CustomUser.DoesNotExist:
-            return JsonResponse({'error': 'User does not exist'})
-        if user.check_password(password):
-            # Generate a new password reset token
-            token_generator = PasswordResetTokenGenerator()
-            token = token_generator.make_token(user)
-            # Set the user's password reset token and send the email
-            user.password_reset_token = token
-            user.save()
-            subject = 'Reset Your Password'
-            message = f'Please click on the following link to reset your password: http://example.com/reset-password/{token}'
-            from_email = 'noreply@example.com'
-            recipient_list = [email]
-            send_mail(subject, message, from_email, recipient_list)
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'error': 'Invalid password'})
-    else:
-        return JsonResponse({'error': 'Invalid request method'})
 
-def recover_password(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        user_model = get_user_model()
-        try:
-            user = user_model.objects.get(email=email)
-        except user_model.DoesNotExist:
-            return JsonResponse({'error': 'No user with that email.'}, status=404)
-        
-        new_password = get_random_string(length=10) # generate new password
-        user.set_password(new_password) # set the new password
-        user.save() # save the user object
-        send_mail(
-            'Your new password', # subject
-            f'Your new password is: {new_password}', # message
-            'from@example.com', # from email
-            [email], # recipient email
-            fail_silently=False, # raise an error if the email fails to send
-        )
-        return JsonResponse({'success': 'Password reset email sent.'}, status=200)
-    else:
-        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+class CustomUserPasswordAPIView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUpdateUserSerializer
+    lookup_field = "id"
+
+    def put(self, request, *args, **kwargs):
+        serializer = CustomUserPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = self.get_object()
+            current_password = serializer.validated_data.get("current_password")
+            new_password = serializer.validated_data.get("new_password")
+
+            if not user.check_password(current_password):
+                return Response(
+                    {"error": "Invalid current password"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            user.set_password(new_password)
+            user.save()
+
+            return Response({"success": True}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomUserEmailPasswordAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = CustomUserEmailPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get("email")
+            try:
+                user = CustomUser.objects.get(email=email)
+            except CustomUser.DoesNotExist:
+                return Response(
+                    {"error": "User with provided email does not exist"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Generate a random password
+            new_password = get_random_string(length=8)
+
+            # Hash the password
+            hashed_password = hashers.make_password(new_password)
+
+            # Update the user's password in the database
+            user.password = hashed_password
+            user.save()
+
+            # Send the new password to the user via email
+            send_mail(
+                "Your new password",
+                f"Your new password is: {new_password}",
+                "from@example.com",
+                [email],
+                fail_silently=False,
+            )
+
+            return Response({"success": True}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
