@@ -10,13 +10,13 @@ class Project(models.Model):
     total_area = models.FloatField(blank=True)
     legal_reserve_area = models.FloatField(blank=True)
     address = models.CharField(max_length=200, blank=True)
-    cep = models.CharField(max_length=20, blank=True, null=True)
     status_car = models.CharField(max_length=200, blank=True)
     sicar_code = models.CharField(max_length=200, blank=True)
     matricula_status = models.CharField(max_length=200, blank=True)
     georeferencing_status = models.CharField(max_length=200, blank=True)
     reserve_legal_status = models.CharField(max_length=200, blank=True)
     physical_or_legal_entity = models.CharField(max_length=200, blank=True)
+    cnpj = models.CharField(max_length=200, null=True, blank=True)
     conservation_unit = models.CharField(max_length=200, blank=True)
     owner_actions_to_preserve_forest = models.TextField(blank=True)
     legal_reserve_deficit = models.BooleanField(null=True, blank=True)
@@ -27,6 +27,7 @@ class Project(models.Model):
     pdf_federal_debt_certificate = models.FileField(upload_to="federal_debt/", blank=True, null=True)
     pdf_ccir = models.FileField(upload_to="ccir/", blank=True, null=True)
     score = models.IntegerField(blank=True, null=True)
+    status = models.CharField(max_length=60, blank=True, null=True)
     
     def calculate_score(self):
         filled_fields = [self.total_area, self.legal_reserve_area, self.address, self.status_car,
