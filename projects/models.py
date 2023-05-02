@@ -32,7 +32,8 @@ class Project(models.Model):
     )
     pdf_ccir = models.FileField(upload_to="ccir/", blank=True, null=True)
     score = models.IntegerField(blank=True, null=True)
-
+    status = models.CharField(max_length=60, blank=True, null=True)
+    
     def calculate_score(self):
         filled_fields = [
             self.total_area,
