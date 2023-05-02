@@ -1,7 +1,9 @@
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.utils import timezone
 
 from accounts.models import CustomUser
 
@@ -66,3 +68,28 @@ class UserProjectsView(generics.ListAPIView):
         projects = Project.objects.filter(owner=user)
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProjectByDateAPIView(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        date = self.request.query_params.get('date', None)
+        if date:
+            return self.queryset.filter(created_at__gte=date)
+        else:
+            return self.queryset
+
+
+class ProjectByDateRangeAPIView(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        start_date = self.request.query_params.get('start_date', None)
+        end_date = self.request.query_params.get('end_date', None)
+        if start_date and end_date:
+            return self.queryset.filter(Q(created_at__lte=end_date) & Q(updated_at__gte=start_date))
+        else:
+            return self.queryset.none()

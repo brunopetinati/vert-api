@@ -7,6 +7,8 @@ from .views import (
     ProjectUpdateAPIView,
     UserProjectsView,
     download_file,
+    ProjectByDateAPIView,
+    ProjectByDateRangeAPIView,
 )
 
 urlpatterns = [
@@ -31,5 +33,15 @@ urlpatterns = [
         "projects/<int:user_id>/by_user/",
         UserProjectsView.as_view(),
         name="project-list-by-user",
+    ),
+    path(
+        "projects/by_date/",  
+        ProjectByDateAPIView.as_view(),
+        name="project-list-by-date",
+    ),
+    path(
+        "projects/by_date_range/",  
+        ProjectByDateRangeAPIView.as_view(),
+        name="project-list-by-date-range",
     ),
 ]

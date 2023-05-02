@@ -1,4 +1,7 @@
+import socket
 import argon2
+import dns.resolver
+import sys
 from django.contrib.auth import authenticate, get_user_model, hashers
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.hashers import check_password
@@ -145,6 +148,9 @@ class CustomUserPasswordAPIView(generics.UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+import dns.resolver
+import socket
+
 class CustomUserEmailPasswordAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = CustomUserEmailPasswordSerializer(data=request.data)
@@ -168,14 +174,30 @@ class CustomUserEmailPasswordAPIView(APIView):
             user.password = hashed_password
             user.save()
 
+            # Resolve the hostname of the SMTP server
+            try:
+                smtp_host = socket.gethostbyname('your-smtp-hostname-here')
+            except socket.gaierror:
+                return Response(
+                    {"error": "Failed to resolve SMTP host. Please check your internet connection and try again."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+
             # Send the new password to the user via email
-            send_mail(
-                "Your new password",
-                f"Your new password is: {new_password}",
-                "from@example.com",
-                [email],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    "Your new password",
+                    f"Your new password is: {new_password}",
+                    "from@example.com",
+                    [email],
+                    fail_silently=False,
+                    connection=smtp_host,
+                )
+            except Exception as e:
+                return Response(
+                    {"error": str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
             return Response({"success": True}, status=status.HTTP_200_OK)
 
