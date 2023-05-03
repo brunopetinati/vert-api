@@ -9,6 +9,7 @@ from .views import (
     download_file,
     ProjectByDateAPIView,
     ProjectByDateRangeAPIView,
+    ProjectBeforeDateAPIView
 )
 
 urlpatterns = [
@@ -43,5 +44,10 @@ urlpatterns = [
         "projects/by_date_range/",  
         ProjectByDateRangeAPIView.as_view(),
         name="project-list-by-date-range",
+    ),
+     path(
+        "projects/before_date/", 
+        ProjectBeforeDateAPIView.as_view(), 
+        name="project-list-before-date"
     ),
 ]

@@ -4,6 +4,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.utils import timezone
+from django.utils.timezone import make_aware
+from rest_framework.exceptions import ValidationError
+from datetime import datetime
+
 
 from accounts.models import CustomUser
 
@@ -93,3 +97,20 @@ class ProjectByDateRangeAPIView(generics.ListAPIView):
             return self.queryset.filter(Q(created_at__lte=end_date) & Q(updated_at__gte=start_date))
         else:
             return self.queryset.none()
+
+
+class ProjectBeforeDateAPIView(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        try:
+            date_str = self.request.query_params.get('date', None)
+            if not date_str:
+                raise ValidationError('Date parameter is required.')
+
+            date = make_aware(datetime.strptime(date_str, '%Y-%m-%d'))
+
+        except (ValueError, ValidationError) as e:
+            raise ValidationError(str(e))
+
+        return Project.objects.filter(created_at__lt=date)
