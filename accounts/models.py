@@ -26,6 +26,8 @@ class CustomUser(AbstractUser):
         choices=UserTypeEnum.choices,
         default=UserTypeEnum.REGULAR,
     )
+    accept_terms_of_use = models.BooleanField(blank=True, null=True)
+    accept_privacy_politics = models.BooleanField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -5,6 +5,7 @@ astroid==2.14.2
 asttokens==2.2.1
 autopep8==2.0.1
 backcall==0.2.0
+backports.zoneinfo==0.2.1
 bcrypt==4.0.1
 black==23.1.0
 cffi==1.15.1
@@ -17,6 +18,7 @@ django-extensions==3.2.1
 djangorestframework==3.14.0
 djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==5.2.2
+dnspython==2.3.0
 executing==1.2.0
 flake8==6.0.0
 ipdb==0.13.11
@@ -50,6 +52,6 @@ stack-data==0.6.2
 tomli==2.0.1
 tomlkit==0.11.6
 traitlets==5.9.0
-typing_extensions==4.5.0
+typing-extensions==4.5.0
 wcwidth==0.2.6
 wrapt==1.14.1
