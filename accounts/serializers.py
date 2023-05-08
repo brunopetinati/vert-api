@@ -4,7 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import CustomUser
+from .models import CustomUser, BankInfo, UserTypeEnum
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -153,3 +153,38 @@ class CustomUserPasswordSerializer(serializers.Serializer):
 
 class CustomUserEmailPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+# class BankInfoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = BankInfo
+#         fields = '__all__'
+
+
+class BankInfoSerializer(serializers.ModelSerializer):
+    """
+    Serializer for bank information of CustomUser.
+    """
+    user_type = serializers.ChoiceField(choices=UserTypeEnum.choices)
+    bank = serializers.CharField()
+    account_number = serializers.CharField()
+    branch_number = serializers.CharField()
+    pix_key = serializers.CharField()
+
+    class Meta:
+        model = BankInfo
+        fields = ["id", "user_type", "bank", "account_number", "branch_number", "pix_key"]
+
+    def create(self, validated_data):
+        user = validated_data.pop("user")
+        bank_information = BankInfo.objects.create(user=user, **validated_data)
+        return bank_information
+
+    def update(self, instance, validated_data):
+        instance.user_type = validated_data.get("user_type", instance.user_type)
+        instance.bank = validated_data.get("bank", instance.bank)
+        instance.account_number = validated_data.get("account_number", instance.account_number)
+        instance.branch_number = validated_data.get("branch_number", instance.branch_number)
+        instance.pix_key = validated_data.get("pix_key", instance.pix_key)
+        instance.save()
+        return instance

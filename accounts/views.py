@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
@@ -19,9 +19,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from accounts.serializers import CustomUserLoginSerializer
 
-from .models import CustomUser
+from accounts.serializers import CustomUserLoginSerializer, BankInfoSerializer
+
+from .models import CustomUser, BankInfo, UserTypeEnum
 from .serializers import (
     CustomTokenObtainPairSerializer,
     CustomUpdateUserSerializer,
@@ -148,8 +149,7 @@ class CustomUserPasswordAPIView(generics.UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-import dns.resolver
-import socket
+
 
 class CustomUserEmailPasswordAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -202,3 +202,44 @@ class CustomUserEmailPasswordAPIView(APIView):
             return Response({"success": True}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BankInfoListAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = BankInfoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return get_object_or_404(BankInfo, user=self.request.user)
+
+class BankInfoCreateAPIView(generics.CreateAPIView):
+    """
+    API endpoint that allows users to create their bank information.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BankInfoSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class BankInfoRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """
+    API endpoint that allows users to retrieve and update their bank information.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BankInfoSerializer
+
+    def get_object(self):
+        try:
+            return self.request.user.bank_info
+        except BankInfo.DoesNotExist:
+            return Response({"error": "Bank information not found for this user."}, status=status.HTTP_404_NOT_FOUND)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class BankInfoDeleteAPIView(generics.DestroyAPIView):
+    queryset = BankInfo.objects.all()
+    serializer_class = BankInfoSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'

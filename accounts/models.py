@@ -51,3 +51,16 @@ class CustomUser(AbstractUser):
         help_text="Specific permissions for this user.",
         verbose_name="user permissions",
     )
+
+
+class BankInfo(models.Model):
+    ACCOUNT_TYPE = [
+        ('PJ', 'Pessoa Jurídica'),
+        ('PF', 'Pessoa Física'),
+    ]
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    account_type = models.CharField(max_length=2, choices=ACCOUNT_TYPE)
+    bank = models.CharField(max_length=100)
+    account_number = models.CharField(max_length=20)
+    agency = models.CharField(max_length=20)
+    pix_key = models.CharField(max_length=100)
