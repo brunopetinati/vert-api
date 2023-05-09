@@ -165,26 +165,23 @@ class BankInfoSerializer(serializers.ModelSerializer):
     """
     Serializer for bank information of CustomUser.
     """
-    user_type = serializers.ChoiceField(choices=UserTypeEnum.choices)
-    bank = serializers.CharField()
-    account_number = serializers.CharField()
-    branch_number = serializers.CharField()
-    pix_key = serializers.CharField()
+    account_type = serializers.CharField(max_length=2)
 
     class Meta:
         model = BankInfo
-        fields = ["id", "user_type", "bank", "account_number", "branch_number", "pix_key"]
+        fields = ["id", "account_type", "bank", "account_number", "agency", "pix_key", "user"]
 
     def create(self, validated_data):
+        account_type = validated_data.pop("account_type")
         user = validated_data.pop("user")
-        bank_information = BankInfo.objects.create(user=user, **validated_data)
+        bank_information = BankInfo.objects.create(account_type=account_type, user=user, **validated_data)
         return bank_information
 
     def update(self, instance, validated_data):
-        instance.user_type = validated_data.get("user_type", instance.user_type)
+        instance.account_type = validated_data.get("account_type", instance.account_type)
         instance.bank = validated_data.get("bank", instance.bank)
         instance.account_number = validated_data.get("account_number", instance.account_number)
-        instance.branch_number = validated_data.get("branch_number", instance.branch_number)
+        instance.agency = validated_data.get("agency", instance.agency)
         instance.pix_key = validated_data.get("pix_key", instance.pix_key)
         instance.save()
         return instance

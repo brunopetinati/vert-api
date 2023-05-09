@@ -58,7 +58,7 @@ class BankInfo(models.Model):
         ('PJ', 'Pessoa Jurídica'),
         ('PF', 'Pessoa Física'),
     ]
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='bank_info')
     account_type = models.CharField(max_length=2, choices=ACCOUNT_TYPE)
     bank = models.CharField(max_length=100)
     account_number = models.CharField(max_length=20)
