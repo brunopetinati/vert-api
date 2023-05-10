@@ -1,6 +1,10 @@
 from django.urls import path
 
 from .views import (
+    BankInfoCreateAPIView,
+    BankInfoListAPIView,
+    BankInfoRetrieveUpdateAPIView,
+    BankInfoDeleteAPIView,
     CustomUserCreate,
     CustomUserDeleteAPIView,
     CustomUserEmailPasswordAPIView,
@@ -32,4 +36,8 @@ urlpatterns = [
         CustomUserEmailPasswordAPIView.as_view(),
         name="send_password",
     ),
+    path('bankinfo/', BankInfoCreateAPIView.as_view(), name='bankinfo-create'),
+    path('bankinfo/list/', BankInfoListAPIView.as_view(), name='bankinfo-list'),
+    path('bankinfo/<int:id>/', BankInfoRetrieveUpdateAPIView.as_view(), name='bankinfo-retrieve-update'),
+    path('bankinfo/<int:id>/delete/', BankInfoDeleteAPIView.as_view(), name='bankinfo-delete'),
 ]
