@@ -114,3 +114,13 @@ class ProjectBeforeDateAPIView(generics.ListAPIView):
             raise ValidationError(str(e))
 
         return Project.objects.filter(created_at__lt=date)
+
+
+def verify_password(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    password = request.data.get('password')
+
+    if check_password(password, project.password):
+        return download_file(request, project_id, field_name)
+    else:
+        return Response({"error": "Senha inválida."}, status=status.HTTP_401_UNAUTHORIZED)
