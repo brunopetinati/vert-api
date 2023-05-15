@@ -31,6 +31,7 @@ class Project(models.Model):
         upload_to="federal_debt/", blank=True, null=True
     )
     pdf_ccir = models.FileField(upload_to="ccir/", blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True)
     score = models.IntegerField(blank=True, null=True)
     status = models.CharField(max_length=60, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -45,9 +45,14 @@ urlpatterns = [
         ProjectByDateRangeAPIView.as_view(),
         name="project-list-by-date-range",
     ),
-     path(
+    path(
         "projects/before_date/", 
         ProjectBeforeDateAPIView.as_view(), 
         name="project-list-before-date"
+    ),
+    path(
+        'project/<int:project_id>/verify_password/', 
+        verify_password,
+        name="verify_password"
     ),
 ]
