@@ -7,6 +7,7 @@ from .views import (
     ProjectUpdateAPIView,
     UserProjectsView,
     download_file,
+    verify_password,
     ProjectByDateAPIView,
     ProjectByDateRangeAPIView,
     ProjectBeforeDateAPIView
