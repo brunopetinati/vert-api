@@ -112,35 +112,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed("Informe o email e a senha.")
 
 
-class CustomUserUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = [
-            "id",
-            "full_name",
-            "phone",
-            "cpf",
-            "cep",
-            "street",
-            "number",
-            "complement",
-            "district",
-            "city",
-            "state",
-            "email",
-        ]
-        extra_kwargs = {"password": {"write_only": True}}
-
-    def update(self, instance, validated_data):
-        # verifique se o valor do campo de email foi alterado
-        if "email" in validated_data and validated_data["email"] != instance.email:
-            # verifique se o novo valor do campo de email já existe em outro registro
-            if CustomUser.objects.filter(email=validated_data["email"]).exists():
-                raise serializers.ValidationError("Este email já está em uso.")
-
-        # atualize o objeto `CustomUser` com os dados validados
-        return super().update(instance, validated_data)
-
 
 class CustomUserPasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(
@@ -154,11 +125,6 @@ class CustomUserPasswordSerializer(serializers.Serializer):
 class CustomUserEmailPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
-
-# class BankInfoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = BankInfo
-#         fields = '__all__'
 
 
 class BankInfoSerializer(serializers.ModelSerializer):

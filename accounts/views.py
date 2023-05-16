@@ -29,7 +29,6 @@ from .serializers import (
     CustomUserEmailPasswordSerializer,
     CustomUserPasswordSerializer,
     CustomUserSerializer,
-    CustomUserUpdateSerializer,
 )
 
 
