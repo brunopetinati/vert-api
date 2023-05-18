@@ -4,7 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import CustomUser, BankInfo, UserTypeEnum
+from .models import CustomUser, BankInfo, UserTypeEnum, UserSettings
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -149,5 +149,22 @@ class BankInfoSerializer(serializers.ModelSerializer):
         instance.account_number = validated_data.get("account_number", instance.account_number)
         instance.agency = validated_data.get("agency", instance.agency)
         instance.pix_key = validated_data.get("pix_key", instance.pix_key)
+        instance.save()
+        return instance
+
+
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSettings
+        fields = ['user', 'style_cards_users', 'style_cards_projects']
+
+    def create(self, validated_data):
+        user_settings = UserSettings.objects.create(**validated_data)
+        return user_settings
+
+    def update(self, instance, validated_data):
+        instance.style_cards_users = validated_data.get('style_cards_users', instance.style_cards_users)
+        instance.style_cards_projects = validated_data.get('style_cards_projects', instance.style_cards_projects)
         instance.save()
         return instance

@@ -1,9 +1,8 @@
 import socket
 import argon2
 import dns.resolver
-import sys
-from django.contrib.auth import authenticate, get_user_model, hashers
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth import hashers
+from rest_framework import viewsets
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
@@ -20,15 +19,16 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import get_object_or_404
 
-from accounts.serializers import CustomUserLoginSerializer, BankInfoSerializer
-
-from .models import CustomUser, BankInfo, UserTypeEnum
+from .models import CustomUser, BankInfo, UserTypeEnum, UserSettings
 from .serializers import (
     CustomTokenObtainPairSerializer,
     CustomUpdateUserSerializer,
     CustomUserEmailPasswordSerializer,
     CustomUserPasswordSerializer,
     CustomUserSerializer,
+    UserSettingsSerializer,
+    CustomUserLoginSerializer, 
+    BankInfoSerializer
 )
 
 
@@ -242,3 +242,9 @@ class BankInfoDeleteAPIView(generics.DestroyAPIView):
     serializer_class = BankInfoSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'id'
+
+
+class UserSettingsViewSet(viewsets.ModelViewSet):
+    queryset = UserSettings.objects.all()
+    serializer_class = UserSettingsSerializer
+    permission_classes = [IsAuthenticated]    

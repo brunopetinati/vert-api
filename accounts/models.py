@@ -64,3 +64,9 @@ class BankInfo(models.Model):
     account_number = models.CharField(max_length=20)
     agency = models.CharField(max_length=20)
     pix_key = models.CharField(max_length=100)
+
+
+class UserSettings(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='user_settings')
+    style_cards_users = models.BooleanField(default=False)
+    style_cards_projects = models.BooleanField(default=False)
