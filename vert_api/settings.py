@@ -190,18 +190,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = False
 EMAIL_HOST_USER = "your_smtp_username"
 EMAIL_HOST_PASSWORD = "your_smtp_password"
-
-
-# Não indicado para produção
-
-# settings.py
-
-# Set the following setting to True to enable HTTPS support
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# Set the following setting to True to allow the development server to serve static files
-# over HTTPS. This is only suitable for development purposes and not recommended for production.
-# Make sure to set the paths correctly for your static files.
-SECURE_SSL_REDIRECT = True
-STATIC_URL = '/static/'
-STATIC_ROOT = '/path/to/static/files/'
