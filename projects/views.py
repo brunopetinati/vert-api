@@ -1,13 +1,13 @@
+from datetime import datetime
+
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
-from rest_framework.response import Response
 from django.utils import timezone
 from django.utils.timezone import make_aware
+from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
-from datetime import datetime
-
+from rest_framework.response import Response
 
 from accounts.models import CustomUser
 
@@ -79,7 +79,7 @@ class ProjectByDateAPIView(generics.ListAPIView):
     queryset = Project.objects.all()
 
     def get_queryset(self):
-        date = self.request.query_params.get('date', None)
+        date = self.request.query_params.get("date", None)
         if date:
             return self.queryset.filter(created_at__gte=date)
         else:
@@ -91,10 +91,12 @@ class ProjectByDateRangeAPIView(generics.ListAPIView):
     queryset = Project.objects.all()
 
     def get_queryset(self):
-        start_date = self.request.query_params.get('start_date', None)
-        end_date = self.request.query_params.get('end_date', None)
+        start_date = self.request.query_params.get("start_date", None)
+        end_date = self.request.query_params.get("end_date", None)
         if start_date and end_date:
-            return self.queryset.filter(Q(created_at__lte=end_date) & Q(updated_at__gte=start_date))
+            return self.queryset.filter(
+                Q(created_at__lte=end_date) & Q(updated_at__gte=start_date)
+            )
         else:
             return self.queryset.none()
 
@@ -104,11 +106,11 @@ class ProjectBeforeDateAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         try:
-            date_str = self.request.query_params.get('date', None)
+            date_str = self.request.query_params.get("date", None)
             if not date_str:
-                raise ValidationError('Date parameter is required.')
+                raise ValidationError("Date parameter is required.")
 
-            date = make_aware(datetime.strptime(date_str, '%Y-%m-%d'))
+            date = make_aware(datetime.strptime(date_str, "%Y-%m-%d"))
 
         except (ValueError, ValidationError) as e:
             raise ValidationError(str(e))
@@ -118,9 +120,11 @@ class ProjectBeforeDateAPIView(generics.ListAPIView):
 
 def verify_password(request, project_id):
     project = get_object_or_404(Project, id=project_id)
-    password = request.data.get('password')
+    password = request.data.get("password")
 
     if check_password(password, project.password):
         return download_file(request, project_id, field_name)
     else:
-        return Response({"error": "Senha inválida."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            {"error": "Senha inválida."}, status=status.HTTP_401_UNAUTHORIZED
+        )

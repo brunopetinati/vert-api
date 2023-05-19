@@ -1,15 +1,16 @@
 import socket
+
 import argon2
 import dns.resolver
 from django.contrib.auth import hashers
-from rest_framework import viewsets
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
-from django.http import HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
-from rest_framework import generics, status, permissions
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
@@ -17,18 +18,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.shortcuts import get_object_or_404
 
-from .models import CustomUser, BankInfo, UserTypeEnum, UserSettings
+from .models import BankInfo, CustomUser, UserSettings, UserTypeEnum
 from .serializers import (
+    BankInfoSerializer,
     CustomTokenObtainPairSerializer,
     CustomUpdateUserSerializer,
     CustomUserEmailPasswordSerializer,
+    CustomUserLoginSerializer,
     CustomUserPasswordSerializer,
     CustomUserSerializer,
     UserSettingsSerializer,
-    CustomUserLoginSerializer, 
-    BankInfoSerializer
 )
 
 
@@ -148,8 +148,6 @@ class CustomUserPasswordAPIView(generics.UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class CustomUserEmailPasswordAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = CustomUserEmailPasswordSerializer(data=request.data)
@@ -173,15 +171,6 @@ class CustomUserEmailPasswordAPIView(APIView):
             user.password = hashed_password
             user.save()
 
-            # Resolve the hostname of the SMTP server
-            try:
-                smtp_host = socket.gethostbyname('your-smtp-hostname-here')
-            except socket.gaierror:
-                return Response(
-                    {"error": "Failed to resolve SMTP host. Please check your internet connection and try again."},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-
             # Send the new password to the user via email
             try:
                 send_mail(
@@ -190,7 +179,6 @@ class CustomUserEmailPasswordAPIView(APIView):
                     "from@example.com",
                     [email],
                     fail_silently=False,
-                    connection=smtp_host,
                 )
             except Exception as e:
                 return Response(
@@ -210,20 +198,24 @@ class BankInfoListAPIView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return get_object_or_404(BankInfo, user=self.request.user)
 
+
 class BankInfoCreateAPIView(generics.CreateAPIView):
     """
     API endpoint that allows users to create their bank information.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BankInfoSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 class BankInfoRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     """
     API endpoint that allows users to retrieve and update their bank information.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BankInfoSerializer
 
@@ -231,7 +223,10 @@ class BankInfoRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
         try:
             return self.request.user.bank_info
         except BankInfo.DoesNotExist:
-            return Response({"error": "Bank information not found for this user."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Bank information not found for this user."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
@@ -241,10 +236,22 @@ class BankInfoDeleteAPIView(generics.DestroyAPIView):
     queryset = BankInfo.objects.all()
     serializer_class = BankInfoSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'id'
+    lookup_field = "id"
 
 
 class UserSettingsViewSet(viewsets.ModelViewSet):
     queryset = UserSettings.objects.all()
     serializer_class = UserSettingsSerializer
-    permission_classes = [IsAuthenticated]    
+    permission_classes = [IsAuthenticated]
+
+
+# view de teste para envio de e-mail
+def send_email_view(request):
+    send_mail(
+        "Assunto do email",
+        "Corpo do email.",
+        "from@example.com",
+        ["to@example.com"],
+        fail_silently=False,
+    )
+    return HttpResponse("E-mail enviado!")
