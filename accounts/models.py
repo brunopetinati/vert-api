@@ -1,11 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class UserTypeEnum(models.TextChoices):
-    REGULAR = 'Regular', ('Regular')
-    ADMIN = 'ADM', ('Admin')
-    COMERCIAL = 'COM', ('Comercial')
-    ENGENHARIA = 'ENG', ('Engenharia')
+    REGULAR = "Regular", ("Regular")
+    ADMIN = "ADM", ("Admin")
+    COMERCIAL = "COM", ("Comercial")
+    ENGENHARIA = "ENG", ("Engenharia")
+
 
 class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=200)
@@ -55,12 +57,22 @@ class CustomUser(AbstractUser):
 
 class BankInfo(models.Model):
     ACCOUNT_TYPE = [
-        ('PJ', 'Pessoa Jurídica'),
-        ('PF', 'Pessoa Física'),
+        ("PJ", "Pessoa Jurídica"),
+        ("PF", "Pessoa Física"),
     ]
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='bank_info')
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="bank_info"
+    )
     account_type = models.CharField(max_length=2, choices=ACCOUNT_TYPE)
     bank = models.CharField(max_length=100)
     account_number = models.CharField(max_length=20)
     agency = models.CharField(max_length=20)
     pix_key = models.CharField(max_length=100)
+
+
+class UserSettings(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="user_settings"
+    )
+    style_cards_users = models.BooleanField(default=False)
+    style_cards_projects = models.BooleanField(default=False)

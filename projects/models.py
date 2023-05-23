@@ -36,7 +36,7 @@ class Project(models.Model):
     status = models.CharField(max_length=60, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def calculate_score(self):
         filled_fields = [
             self.total_area,

@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from .views import (
     BankInfoCreateAPIView,
+    BankInfoDeleteAPIView,
     BankInfoListAPIView,
     BankInfoRetrieveUpdateAPIView,
-    BankInfoDeleteAPIView,
     CustomUserCreate,
     CustomUserDeleteAPIView,
     CustomUserEmailPasswordAPIView,
@@ -13,7 +14,12 @@ from .views import (
     CustomUserLoginView,
     CustomUserPasswordAPIView,
     CustomUserUpdateAPIView,
+    UserSettingsViewSet,
+    send_email_view,
 )
+
+router = DefaultRouter()
+router.register(r"user-settings", UserSettingsViewSet)
 
 urlpatterns = [
     path("signup/", CustomUserCreate.as_view(), name="user_create"),
@@ -36,8 +42,18 @@ urlpatterns = [
         CustomUserEmailPasswordAPIView.as_view(),
         name="send_password",
     ),
-    path('bankinfo/', BankInfoCreateAPIView.as_view(), name='bankinfo-create'),
-    path('bankinfo/list/', BankInfoListAPIView.as_view(), name='bankinfo-list'),
-    path('bankinfo/<int:id>/', BankInfoRetrieveUpdateAPIView.as_view(), name='bankinfo-retrieve-update'),
-    path('bankinfo/<int:id>/delete/', BankInfoDeleteAPIView.as_view(), name='bankinfo-delete'),
+    path("bankinfo/", BankInfoCreateAPIView.as_view(), name="bankinfo-create"),
+    path("bankinfo/list/", BankInfoListAPIView.as_view(), name="bankinfo-list"),
+    path(
+        "bankinfo/<int:id>/",
+        BankInfoRetrieveUpdateAPIView.as_view(),
+        name="bankinfo-retrieve-update",
+    ),
+    path(
+        "bankinfo/<int:id>/delete/",
+        BankInfoDeleteAPIView.as_view(),
+        name="bankinfo-delete",
+    ),
+    path("", include(router.urls)),
+    path('send-email/', send_email_view, name='send_email'),
 ]
