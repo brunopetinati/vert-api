@@ -27,6 +27,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "email",
             "user_type",
             "password",
+            "accept_terms_of_use",
+            "accept_privacy_politics"
         ]
         extra_kwargs = {"password": {"write_only": True}}
 
