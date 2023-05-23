@@ -1,6 +1,9 @@
 from django.urls import path
 
 from .views import (
+    ProjectBeforeDateAPIView,
+    ProjectByDateAPIView,
+    ProjectByDateRangeAPIView,
     ProjectDeleteAPIView,
     ProjectGetByIdAPIView,
     ProjectListCreate,
@@ -37,23 +40,23 @@ urlpatterns = [
         name="project-list-by-user",
     ),
     path(
-        "projects/by_date/",  
+        "projects/by_date/",
         ProjectByDateAPIView.as_view(),
         name="project-list-by-date",
     ),
     path(
-        "projects/by_date_range/",  
+        "projects/by_date_range/",
         ProjectByDateRangeAPIView.as_view(),
         name="project-list-by-date-range",
     ),
     path(
-        "projects/before_date/", 
-        ProjectBeforeDateAPIView.as_view(), 
-        name="project-list-before-date"
+        "projects/before_date/",
+        ProjectBeforeDateAPIView.as_view(),
+        name="project-list-before-date",
     ),
     path(
-        'project/<int:project_id>/verify_password/', 
+        "project/<int:project_id>/verify_password/",
         verify_password,
-        name="verify_password"
+        name="verify_password",
     ),
 ]
