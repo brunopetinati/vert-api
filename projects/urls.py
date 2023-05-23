@@ -11,6 +11,9 @@ from .views import (
     UserProjectsView,
     download_file,
     verify_password,
+    ProjectByDateAPIView,
+    ProjectByDateRangeAPIView,
+    ProjectBeforeDateAPIView
 )
 
 urlpatterns = [
