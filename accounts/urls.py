@@ -55,5 +55,5 @@ urlpatterns = [
         name="bankinfo-delete",
     ),
     path("", include(router.urls)),
-    path('send-email/', send_email_view, name='send_email'),
+    path("send-email/", send_email_view, name="send_email"),
 ]

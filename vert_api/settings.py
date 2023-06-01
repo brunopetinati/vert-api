@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "projects",
     "accounts",
+    "push_notifications",
 ]
 
 # AUTH_USER_MODEL = 'accounts.User'
@@ -107,6 +108,8 @@ DATABASES = {
     }
 }
 
+# Indicate that we are behind a secure proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -183,12 +186,11 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # SMTP server settings
-#CSRF_COOKIE_SECURE = False
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
+# CSRF_COOKIE_SECURE = False
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = 'your-email@example.com'
-
+DEFAULT_FROM_EMAIL = "your-email@example.com"
