@@ -28,7 +28,7 @@ SIMPLE_JWT = {
 SECRET_KEY = "django-insecure-w10)py#uo%r2vgwg)ihrgx*3+g6v03_u)p)uj0k!c1&x930i_&"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["3.145.151.125", "localhost", "*"]
 
@@ -183,6 +183,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:19006",
     "http://192.168.15.8:19006",
     "http://192.168.15.8",
+    "http://13.58.237.27:8000"
 ]
 
 # SMTP server settings
