@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import NotificationList, SendNotification, ExpoPushTokenListCreateView,
-    ExpoPushTokenRetrieveUpdateDestroyView
+from .views import NotificationList, SendNotification, UpdateExpoPushTokenView
 
 urlpatterns = [
     path('notifications/', NotificationList.as_view(), name='notifications'),
