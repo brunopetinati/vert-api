@@ -183,7 +183,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:19006",
     "http://192.168.15.8:19006",
     "http://192.168.15.8",
-    "http://13.58.237.27:8000"
+    "http://13.58.237.27:8000",
 ]
 
 # SMTP server settings

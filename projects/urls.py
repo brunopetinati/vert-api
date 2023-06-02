@@ -13,7 +13,7 @@ from .views import (
     verify_password,
     ProjectByDateAPIView,
     ProjectByDateRangeAPIView,
-    ProjectBeforeDateAPIView
+    ProjectBeforeDateAPIView,
 )
 
 urlpatterns = [
