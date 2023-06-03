@@ -5,7 +5,7 @@ from .models import Notification, ExpoPushToken
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ["icon", "title", "message"]
+        fields = ["icon", "title", "message", "date", "created_at"]
 
 
 class ExpoPushTokenSerializer(serializers.ModelSerializer):

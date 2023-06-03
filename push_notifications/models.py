@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from accounts.models import CustomUser
+from django.utils import timezone
 
 
 class ExpoPushToken(models.Model):
@@ -15,3 +16,5 @@ class Notification(models.Model):
     icon = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     message = models.TextField(null=True)
+    date = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
