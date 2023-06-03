@@ -1,22 +1,13 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    BankInfoCreateAPIView,
-    BankInfoDeleteAPIView,
-    BankInfoListAPIView,
-    BankInfoRetrieveUpdateAPIView,
-    CustomUserCreate,
-    CustomUserDeleteAPIView,
-    CustomUserEmailPasswordAPIView,
-    CustomUserGetByIdAPIView,
-    CustomUserList,
-    CustomUserLoginView,
-    CustomUserPasswordAPIView,
-    CustomUserUpdateAPIView,
-    UserSettingsViewSet,
-    send_email_view,
-)
+from .views import (BankInfoCreateAPIView, BankInfoDeleteAPIView,
+                    BankInfoListAPIView, BankInfoRetrieveUpdateAPIView,
+                    CustomUserCreate, CustomUserDeleteAPIView,
+                    CustomUserEmailPasswordAPIView, CustomUserGetByIdAPIView,
+                    CustomUserList, CustomUserLoginView,
+                    CustomUserPasswordAPIView, CustomUserUpdateAPIView,
+                    UserSettingsViewSet, send_email_view)
 
 router = DefaultRouter()
 router.register(r"user-settings", UserSettingsViewSet)
@@ -55,5 +46,5 @@ urlpatterns = [
         name="bankinfo-delete",
     ),
     path("", include(router.urls)),
-    path('send-email/', send_email_view, name='send_email'),
+    path("send-email/", send_email_view, name="send_email"),
 ]
