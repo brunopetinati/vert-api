@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Notification, ExpoPushToken
+
+from .models import ExpoPushToken, Notification
 
 
 class NotificationSerializer(serializers.ModelSerializer):

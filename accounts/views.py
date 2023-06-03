@@ -11,25 +11,24 @@ from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
 from rest_framework import generics, permissions, status, viewsets
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
+from rest_framework.decorators import (authentication_classes,
+                                       permission_classes)
+from rest_framework.permissions import (AllowAny, BasePermission,
+                                        IsAuthenticated)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import BankInfo, CustomUser, UserSettings, UserTypeEnum
-from .serializers import (
-    BankInfoSerializer,
-    CustomTokenObtainPairSerializer,
-    CustomUpdateUserSerializer,
-    CustomUserEmailPasswordSerializer,
-    CustomUserLoginSerializer,
-    CustomUserPasswordSerializer,
-    CustomUserSerializer,
-    UserSettingsSerializer,
-)
+from .serializers import (BankInfoSerializer, CustomTokenObtainPairSerializer,
+                          CustomUpdateUserSerializer,
+                          CustomUserEmailPasswordSerializer,
+                          CustomUserLoginSerializer,
+                          CustomUserPasswordSerializer, CustomUserSerializer,
+                          UserSettingsSerializer)
 
 
 @authentication_classes([])

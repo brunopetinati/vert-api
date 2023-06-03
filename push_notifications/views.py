@@ -1,20 +1,17 @@
-from rest_framework import generics
-from .models import Notification, ExpoPushToken
-from .serializers import NotificationSerializer, ExpoPushTokenSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from accounts.models import CustomUser
-from pyfcm import FCMNotification
-from exponent_server_sdk import (
-    DeviceNotRegisteredError,
-    PushClient,
-    PushMessage,
-    PushServerError,
-    PushTicketError,
-)
-from rest_framework.response import Response
-from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from exponent_server_sdk import (DeviceNotRegisteredError, PushClient,
+                                 PushMessage, PushServerError, PushTicketError)
+from pyfcm import FCMNotification
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from accounts.models import CustomUser
+
+from .models import ExpoPushToken, Notification
+from .serializers import ExpoPushTokenSerializer, NotificationSerializer
+
 
 class UpdateExpoPushTokenView(APIView):
     def post(self, request, *args, **kwargs):
@@ -48,17 +45,20 @@ class NotificationCreate(generics.CreateAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
 
+
 class NotificationUpdate(generics.UpdateAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
-    lookup_field = 'id' 
+    lookup_field = "id"
+
 
 class NotificationDelete(generics.DestroyAPIView):
     queryset = Notification.objects.all()
-    lookup_field = 'id'  
+    lookup_field = "id"
 
 
 from django.utils import timezone
+
 
 class SendNotification(APIView):
     def post(self, request):
@@ -78,7 +78,6 @@ class SendNotification(APIView):
 
         try:
             notification = Notification.objects.get(id=notification_id)
-            print('noti#####', notification)
         except Notification.DoesNotExist:
             return Response({"error": "Notificação não encontrada"}, status=404)
 
@@ -126,5 +125,3 @@ class SendNotification(APIView):
             )
         else:
             return Response({"error": "Falha ao enviar a notificação"}, status=500)
-
-

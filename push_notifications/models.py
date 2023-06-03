@@ -1,7 +1,8 @@
-from django.db import models
 from django.conf import settings
-from accounts.models import CustomUser
+from django.db import models
 from django.utils import timezone
+
+from accounts.models import CustomUser
 
 
 class ExpoPushToken(models.Model):

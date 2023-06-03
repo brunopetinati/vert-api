@@ -1,20 +1,10 @@
 from django.urls import path
 
-from .views import (
-    ProjectBeforeDateAPIView,
-    ProjectByDateAPIView,
-    ProjectByDateRangeAPIView,
-    ProjectDeleteAPIView,
-    ProjectGetByIdAPIView,
-    ProjectListCreate,
-    ProjectUpdateAPIView,
-    UserProjectsView,
-    download_file,
-    verify_password,
-    ProjectByDateAPIView,
-    ProjectByDateRangeAPIView,
-    ProjectBeforeDateAPIView,
-)
+from .views import (ProjectBeforeDateAPIView, ProjectByDateAPIView,
+                    ProjectByDateRangeAPIView, ProjectDeleteAPIView,
+                    ProjectGetByIdAPIView, ProjectListCreate,
+                    ProjectUpdateAPIView, UserProjectsView, download_file,
+                    verify_password)
 
 urlpatterns = [
     path("projects/", ProjectListCreate.as_view(), name="project-list"),

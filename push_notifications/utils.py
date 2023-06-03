@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 
 def send_push_notification(token, title, message):
