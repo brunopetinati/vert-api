@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from exponent_server_sdk import (DeviceNotRegisteredError, PushClient,
                                  PushMessage, PushServerError, PushTicketError)
-from pyfcm import FCMNotification
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
