@@ -7,7 +7,8 @@ from .views import (BankInfoCreateAPIView, BankInfoDeleteAPIView,
                     CustomUserEmailPasswordAPIView, CustomUserGetByIdAPIView,
                     CustomUserList, CustomUserLoginView,
                     CustomUserPasswordAPIView, CustomUserUpdateAPIView,
-                    UserSettingsViewSet, send_email_view)
+                    UserSettingsViewSet, send_email_view,
+                    UsersWithoutProjectsView)
 
 router = DefaultRouter()
 router.register(r"user-settings", UserSettingsViewSet)
@@ -47,4 +48,5 @@ urlpatterns = [
     ),
     path("", include(router.urls)),
     path("send-email/", send_email_view, name="send_email"),
+    path('users_without_projects/', UsersWithoutProjectsView.as_view()),
 ]
