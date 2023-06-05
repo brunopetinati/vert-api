@@ -29,7 +29,7 @@ SIMPLE_JWT = {
 SECRET_KEY = "django-insecure-w10)py#uo%r2vgwg)ihrgx*3+g6v03_u)p)uj0k!c1&x930i_&"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["3.145.151.125", "localhost", "*"]
 
@@ -191,9 +191,8 @@ CORS_ORIGIN_WHITELIST = [
 # SMTP server settings
 # CSRF_COOKIE_SECURE = False
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 1025
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
-EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = "your-email@example.com"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "email da vert"
+EMAIL_HOST_PASSWORD = "senha da vert"
+

@@ -30,7 +30,7 @@ urlpatterns = [
         name="reset_password",
     ),
     path(
-        "send-password/<int:id>/",
+        "send-password/<str:email>/",
         CustomUserEmailPasswordAPIView.as_view(),
         name="send_password",
     ),

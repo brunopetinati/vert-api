@@ -149,11 +149,14 @@ class CustomUserPasswordAPIView(generics.UpdateAPIView):
 
 class CustomUserEmailPasswordAPIView(APIView):
     def post(self, request, *args, **kwargs):
+        email = kwargs.get('email', None)
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = CustomUserEmailPasswordSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
             try:
-                user = CustomUser.objects.get(email=email)
+                user = CustomUser.objects.get(email=email)  
             except CustomUser.DoesNotExist:
                 return Response(
                     {"error": "User with provided email does not exist"},
@@ -169,7 +172,6 @@ class CustomUserEmailPasswordAPIView(APIView):
             # Update the user's password in the database
             user.password = hashed_password
             user.save()
-
             # Send the new password to the user via email
             try:
                 send_mail(
