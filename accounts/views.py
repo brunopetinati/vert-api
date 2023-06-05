@@ -254,3 +254,10 @@ def send_email_view(request):
         fail_silently=False,
     )
     return HttpResponse("E-mail enviado!")
+
+
+class UsersWithoutProjectsView(APIView):
+    def get(self, request):
+        users_without_projects = CustomUser.objects.filter(project__isnull=True)
+        serializer = CustomUserSerializer(users_without_projects, many=True)
+        return Response(serializer.data)
