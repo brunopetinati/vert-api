@@ -192,13 +192,12 @@ class CustomUserEmailPasswordAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class BankInfoListAPIView(generics.RetrieveUpdateAPIView):
+class BankInfoListAPIView(generics.ListAPIView):
+    """
+    API endpoint that allows users to list all bank information.
+    """
+    queryset = BankInfo.objects.all()
     serializer_class = BankInfoSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return get_object_or_404(BankInfo, user=self.request.user)
-
 
 class BankInfoCreateAPIView(generics.CreateAPIView):
     """
@@ -232,6 +231,14 @@ class BankInfoRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
+class BankInfoRetrieveByIDAPIView(generics.RetrieveAPIView):
+    """
+    API endpoint that allows users to retrieve a bank information by ID.
+    """
+    queryset = BankInfo.objects.all()
+    serializer_class = BankInfoSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
 
 class BankInfoDeleteAPIView(generics.DestroyAPIView):
     queryset = BankInfo.objects.all()

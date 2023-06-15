@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (BankInfoCreateAPIView, BankInfoDeleteAPIView,
                     BankInfoListAPIView, BankInfoRetrieveUpdateAPIView,
+                    BankInfoRetrieveByIDAPIView,
                     CustomUserCreate, CustomUserDeleteAPIView,
                     CustomUserEmailPasswordAPIView, CustomUserGetByIdAPIView,
                     CustomUserList, CustomUserLoginView,
@@ -36,6 +37,7 @@ urlpatterns = [
     ),
     path("bankinfo/", BankInfoCreateAPIView.as_view(), name="bankinfo-create"),
     path("bankinfo/list/", BankInfoListAPIView.as_view(), name="bankinfo-list"),
+    path('bank-info/<int:id>/', BankInfoRetrieveByIDAPIView.as_view(), name='bank-info-retrieve-by-id'),
     path(
         "bankinfo/<int:id>/",
         BankInfoRetrieveUpdateAPIView.as_view(),
