@@ -191,9 +191,9 @@ CORS_ORIGIN_WHITELIST = [
 # SMTP server settings
 # CSRF_COOKIE_SECURE = False
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 1025
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = "GetTheSuccess#1"
-EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = "suporte@vertecotech.com"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "suporte@vertecotech.com"
+EMAIL_HOST_PASSWORD = "ykhnvyzzxxcjyhek"
+EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 
