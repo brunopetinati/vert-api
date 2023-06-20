@@ -144,6 +144,8 @@ class CustomUserPasswordAPIView(generics.UpdateAPIView):
 
 
 class PasswordResetRequestView(APIView):
+    authentication_classes = []
+    permission_classes = []  
     def post(self, request):
         email = request.data.get("email")
         try:
@@ -184,6 +186,8 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetConfirmView(APIView):
+    authentication_classes = []
+    permission_classes = []
     def post(self, request, uidb64, token):
         try:
             # Here we handle the possible UnicodeDecodeError
