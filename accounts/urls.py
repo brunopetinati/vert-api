@@ -2,14 +2,13 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (BankInfoCreateAPIView, BankInfoDeleteAPIView,
-                    BankInfoListAPIView, BankInfoRetrieveUpdateAPIView,
-                    BankInfoRetrieveByIDAPIView,
-                    CustomUserCreate, CustomUserDeleteAPIView,
-                    CustomUserEmailPasswordAPIView, CustomUserGetByIdAPIView,
+                    BankInfoListAPIView, BankInfoRetrieveByIDAPIView,
+                    BankInfoRetrieveUpdateAPIView, CustomUserCreate,
+                    CustomUserDeleteAPIView, CustomUserGetByIdAPIView,
                     CustomUserList, CustomUserLoginView,
                     CustomUserPasswordAPIView, CustomUserUpdateAPIView,
-                    UserSettingsViewSet, send_email_view,
-                    UsersWithoutProjectsView)
+                    PasswordResetConfirmView, PasswordResetRequestView,
+                    UserSettingsViewSet, UsersWithoutProjectsView)
 
 router = DefaultRouter()
 router.register(r"user-settings", UserSettingsViewSet)
@@ -30,14 +29,18 @@ urlpatterns = [
         CustomUserPasswordAPIView.as_view(),
         name="reset_password",
     ),
-    path(
-        "send-password/<str:email>/",
-        CustomUserEmailPasswordAPIView.as_view(),
-        name="send_password",
-    ),
+    # path(
+    #     "send-password/<str:email>/",
+    #     CustomUserEmailPasswordAPIView.as_view(),
+    #     name="send_password",
+    # ),
     path("bankinfo/", BankInfoCreateAPIView.as_view(), name="bankinfo-create"),
     path("bankinfo/list/", BankInfoListAPIView.as_view(), name="bankinfo-list"),
-    path('bank-info/<int:id>/', BankInfoRetrieveByIDAPIView.as_view(), name='bank-info-retrieve-by-id'),
+    path(
+        "bank-info/<int:id>/",
+        BankInfoRetrieveByIDAPIView.as_view(),
+        name="bank-info-retrieve-by-id",
+    ),
     path(
         "bankinfo/<int:id>/",
         BankInfoRetrieveUpdateAPIView.as_view(),
@@ -49,6 +52,12 @@ urlpatterns = [
         name="bankinfo-delete",
     ),
     path("", include(router.urls)),
-    path("send-email/", send_email_view, name="send_email"),
-    path('users_without_projects/', UsersWithoutProjectsView.as_view()),
+    # path("send-email/", send_email_view, name="send_email"),
+    path("users_without_projects/", UsersWithoutProjectsView.as_view()),
+    path("password-reset/", PasswordResetRequestView.as_view(), name="password_reset"),
+    path(
+        "password-reset-confirm/<str:uidb64>/<str:token>/",
+        PasswordResetConfirmView.as_view(),
+        name="password-reset-confirm",
+    ),
 ]

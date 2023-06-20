@@ -1,26 +1,22 @@
-import socket
-
 import argon2
 import dns.resolver
-from django.contrib.auth import hashers
+import jwt
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.tokens import (PasswordResetTokenGenerator,
+                                        default_token_generator)
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
-from django.shortcuts import get_object_or_404
-from django.utils.crypto import get_random_string
-from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import generics, permissions, status, viewsets
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
 from rest_framework.decorators import (authentication_classes,
                                        permission_classes)
-from rest_framework.permissions import (AllowAny, BasePermission,
-                                        IsAuthenticated)
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import BankInfo, CustomUser, UserSettings, UserTypeEnum
 from .serializers import (BankInfoSerializer, CustomTokenObtainPairSerializer,
@@ -147,57 +143,89 @@ class CustomUserPasswordAPIView(generics.UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CustomUserEmailPasswordAPIView(APIView):
-    def post(self, request, *args, **kwargs):
-        email = kwargs.get('email', None)
-        if not email:
-            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = CustomUserEmailPasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data.get("email")
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "Usuário com o email fornecido não existe."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Generate the password reset token
+        token = default_token_generator.make_token(user)
+
+        # Convert the user's id to bytes, then encode it in base64
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+
+        # Build the password reset URL
+        current_site = get_current_site(request)
+        reset_url = (
+            f"https://plataforma.vertecotech.com/recover_password/{uidb64}/{token}/"
+        )
+
+        # Compose the email body
+        email_body = f"Clique no seguinte link para redefinir sua senha:\n\n{reset_url}"
+
+        # Send the password reset email
+        send_mail(
+            "Redefinir sua senha",
+            email_body,
+            "noreply@mysite.com",
+            [user.email],
+        )
+
+        return Response(
+            {"message": "Enviamos por email as instruções para definir sua senha."},
+            status=status.HTTP_200_OK,
+        )
+
+
+class PasswordResetConfirmView(APIView):
+    def post(self, request, uidb64, token):
+        try:
+            # Here we handle the possible UnicodeDecodeError
             try:
-                user = CustomUser.objects.get(email=email)  
-            except CustomUser.DoesNotExist:
+                uid = force_str(urlsafe_base64_decode(uidb64))
+            except UnicodeDecodeError:
+                raise AuthenticationFailed("Invalid uidb64.")
+
+            user = CustomUser.objects.get(pk=uid)
+
+            if default_token_generator.check_token(user, token):
+                password = request.data.get("password")
+                password2 = request.data.get("password2")
+
+                if password == password2:
+                    user.set_password(password)
+                    user.save()
+                    return Response(
+                        {"message": "Password reset successful."},
+                        status=status.HTTP_200_OK,
+                    )
+                else:
+                    return Response(
+                        {"error": "Passwords do not match."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            else:
                 return Response(
-                    {"error": "User with provided email does not exist"},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    {"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST
                 )
-
-            # Generate a random password
-            new_password = get_random_string(length=8)
-
-            # Hash the password
-            hashed_password = hashers.make_password(new_password)
-
-            # Update the user's password in the database
-            user.password = hashed_password
-            user.save()
-            # Send the new password to the user via email
-            try:
-                send_mail(
-                    "Your new password",
-                    f"Your new password is: {new_password}",
-                    "from@example.com",
-                    [email],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                return Response(
-                    {"error": str(e)},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-
-            return Response({"success": True}, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except CustomUser.DoesNotExist:
+            raise AuthenticationFailed("Invalid uidb64 or token.")
 
 
 class BankInfoListAPIView(generics.ListAPIView):
     """
     API endpoint that allows users to list all bank information.
     """
+
     queryset = BankInfo.objects.all()
     serializer_class = BankInfoSerializer
+
 
 class BankInfoCreateAPIView(generics.CreateAPIView):
     """
@@ -231,14 +259,17 @@ class BankInfoRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
+
 class BankInfoRetrieveByIDAPIView(generics.RetrieveAPIView):
     """
     API endpoint that allows users to retrieve a bank information by ID.
     """
+
     queryset = BankInfo.objects.all()
     serializer_class = BankInfoSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'id'
+    lookup_field = "id"
+
 
 class BankInfoDeleteAPIView(generics.DestroyAPIView):
     queryset = BankInfo.objects.all()

@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -196,4 +196,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "suporte@vertecotech.com"
 EMAIL_HOST_PASSWORD = "ykhnvyzzxxcjyhek"
 EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = 
+# DEFAULT_FROM_EMAIL =
